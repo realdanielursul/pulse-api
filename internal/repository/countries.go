@@ -16,7 +16,7 @@ func (r *PostgresRepository) ListCountries(regions []string) ([]models.Country, 
 	var rows *sql.Rows
 	var err error
 
-	if regions[0] == "" || len(regions) == 0 {
+	if len(regions) == 0 {
 		query := `SELECT name, alpha2, alpha3, region FROM countries`
 		rows, err = r.db.QueryContext(ctx, query)
 

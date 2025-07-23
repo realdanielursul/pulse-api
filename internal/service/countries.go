@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Service) ListCountries(regions []string) ([]models.Country, error) {
-	if regions[0] != "" && len(regions) != 0 {
+	if len(regions) != 0 {
 		for _, region := range regions {
 			if !isValidRegion(region) {
 				return []models.Country{}, errors.ErrInvalidRegion
