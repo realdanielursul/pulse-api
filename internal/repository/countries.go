@@ -7,7 +7,6 @@ import (
 	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
-// MAYBE SHOULD RESTRUCT THIS METHOD (IF regions == nil {} ELSE {})
 func (r *PostgresRepository) ListCountries(regions []string) ([]models.Country, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()

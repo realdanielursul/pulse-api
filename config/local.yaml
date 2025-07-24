@@ -1,0 +1,21 @@
+app:
+  name: pulse-api
+  version: 1.0.0
+
+http:
+  port: 8080
+
+postgres:
+  host: localhost
+  port: 5432
+  username: postgres
+  password: postgres
+  database: pulse
+  ssl_mode: disable
+
+jwt:
+  sign_key: GBANDS812
+  token_ttl: 120m
+
+hasher:
+  salt: dakd1mw123qmz/zdwdwqdp*

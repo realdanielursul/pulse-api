@@ -7,12 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	pulseapi "github.com/ursulgwopp/pulse-api"
-	"github.com/ursulgwopp/pulse-api/configs"
+	"github.com/ursulgwopp/pulse-api/config"
 	"github.com/ursulgwopp/pulse-api/internal/handler"
 	"github.com/ursulgwopp/pulse-api/internal/repository"
 	"github.com/ursulgwopp/pulse-api/internal/service"
@@ -21,21 +19,18 @@ import (
 func main() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
 
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
-
-	if err := configs.InitConfig(); err != nil {
+	cfg, err := config.NewConfig("./config/local.yaml")
+	if err != nil {
 		logrus.Fatalf("error initializing configs: %s", err.Error())
 	}
 
-	db, err := repository.NewPostgresDB(configs.Config{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmode"),
+	db, err := repository.NewPostgresDB(config.Postgres{
+		Host:     cfg.Postgres.Host,
+		Port:     cfg.Postgres.Port,
+		Username: cfg.Postgres.Username,
+		Password: cfg.Postgres.Password,
+		Database: cfg.Postgres.Database,
+		SSLMode:  cfg.Postgres.SSLMode,
 	})
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
@@ -47,7 +42,7 @@ func main() {
 
 	srv := &pulseapi.Server{}
 	go func() {
-		if err := srv.Run(viper.GetString("port"), handler.InitRoutes()); err != nil && err != http.ErrServerClosed {
+		if err := srv.Run(cfg.HTTP.Port, handler.InitRoutes()); err != nil && err != http.ErrServerClosed {
 			logrus.Fatalf("error running http server: %s", err.Error())
 		}
 	}()
