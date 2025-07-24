@@ -1,4 +1,4 @@
-package models
+package entity
 
 import (
 	"github.com/gin-gonic/gin"

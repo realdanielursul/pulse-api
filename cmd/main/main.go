@@ -38,7 +38,7 @@ func main() {
 
 	repo := repository.NewPostgresRepository(db)
 	service := service.NewService(repo)
-	handler := handler.NewTransport(service)
+	handler := handler.NewHandler(service)
 
 	srv := &pulseapi.Server{}
 	go func() {

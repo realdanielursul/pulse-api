@@ -7,27 +7,27 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 	"github.com/ursulgwopp/pulse-api/internal/errors"
-	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
 func (h *Handler) userIdentity(c *gin.Context) {
 	header := c.GetHeader("Authorization")
 	if header == "" {
-		models.NewErrorResponse(c, http.StatusUnauthorized, errors.ErrEmptyAuthHeader.Error())
+		entity.NewErrorResponse(c, http.StatusUnauthorized, errors.ErrEmptyAuthHeader.Error())
 		return
 	}
 
 	token, _ := strings.CutPrefix(header, "Bearer ")
 
 	if err := h.service.ValidateToken(token); err != nil {
-		models.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
+		entity.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	login, err := parseToken(token)
 	if err != nil {
-		models.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
+		entity.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
@@ -50,7 +50,7 @@ func getLogin(c *gin.Context) (string, error) {
 }
 
 func parseToken(token string) (string, error) {
-	token_, err := jwt.ParseWithClaims(token, &models.TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token_, err := jwt.ParseWithClaims(token, &entity.TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.ErrInvalidSigningMethod
 		}
@@ -61,7 +61,7 @@ func parseToken(token string) (string, error) {
 		return "", err
 	}
 
-	claims, ok := token_.Claims.(*models.TokenClaims)
+	claims, ok := token_.Claims.(*entity.TokenClaims)
 	if !ok {
 		return "", errors.ErrInvalidTokenClaims
 	}

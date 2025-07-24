@@ -3,64 +3,64 @@ package repository
 import (
 	"context"
 
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 	"github.com/ursulgwopp/pulse-api/internal/errors"
-	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
-func (r *PostgresRepository) GetProfile(login string) (models.UserProfile, error) {
+func (r *PostgresRepository) GetProfile(login string) (entity.UserProfile, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()
 
-	var userProfile models.UserProfile
+	var userProfile entity.UserProfile
 	query := `SELECT login, email, country_code, is_public, phone, image FROM users WHERE login = $1`
 	if err := r.db.QueryRowContext(ctx, query, login).Scan(&userProfile.Login, &userProfile.Email, &userProfile.CountryCode, &userProfile.IsPublic, &userProfile.Phone, &userProfile.Image); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	return userProfile, nil
 }
 
-func (r *PostgresRepository) UpdateProfile(login string, req models.UpdateProfileRequest) (models.UserProfile, error) {
+func (r *PostgresRepository) UpdateProfile(login string, req entity.UpdateProfileRequest) (entity.UserProfile, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()
 
 	if req.CountryCode != nil {
 		_, err := r.db.ExecContext(ctx, "UPDATE users SET country_code = $1 WHERE login = $2", *req.CountryCode, login)
 		if err != nil {
-			return models.UserProfile{}, err
+			return entity.UserProfile{}, err
 		}
 	}
 
 	if req.IsPublic != nil {
 		_, err := r.db.ExecContext(ctx, "UPDATE users SET is_public = $1 WHERE login = $2", *req.IsPublic, login)
 		if err != nil {
-			return models.UserProfile{}, err
+			return entity.UserProfile{}, err
 		}
 	}
 
 	if req.Phone != nil {
 		_, err := r.db.ExecContext(ctx, "UPDATE users SET phone = $1 WHERE login = $2", *req.Phone, login)
 		if err != nil {
-			return models.UserProfile{}, err
+			return entity.UserProfile{}, err
 		}
 	}
 
 	if req.Image != nil {
 		_, err := r.db.ExecContext(ctx, "UPDATE users SET image = $1 WHERE login = $2", *req.Image, login)
 		if err != nil {
-			return models.UserProfile{}, err
+			return entity.UserProfile{}, err
 		}
 	}
 
 	userProfile, err := r.GetProfile(login)
 	if err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	return userProfile, nil
 }
 
-func (r *PostgresRepository) UpdatePassword(login string, req models.UpdatePasswordRequest) error {
+func (r *PostgresRepository) UpdatePassword(login string, req entity.UpdatePasswordRequest) error {
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()
 

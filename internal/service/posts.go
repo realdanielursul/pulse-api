@@ -2,38 +2,38 @@ package service
 
 import (
 	"github.com/google/uuid"
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 	"github.com/ursulgwopp/pulse-api/internal/errors"
-	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
-func (s *Service) NewPost(login string, req models.NewPostRequest) (models.Post, error) {
+func (s *Service) NewPost(login string, req entity.NewPostRequest) (entity.Post, error) {
 	if err := validateContent(req.Content); err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	for _, tag := range req.Tags {
 		if !isValidTag(tag) {
-			return models.Post{}, errors.ErrInvalidTag
+			return entity.Post{}, errors.ErrInvalidTag
 		}
 	}
 
 	return s.repo.NewPost(login, req)
 }
 
-func (s *Service) GetPost(login string, postId uuid.UUID) (models.Post, error) {
+func (s *Service) GetPost(login string, postId uuid.UUID) (entity.Post, error) {
 	// id exists
 	exists, err := s.repo.CheckPostIdExists(postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	if !exists {
-		return models.Post{}, errors.ErrPostIdNotFound
+		return entity.Post{}, errors.ErrPostIdNotFound
 	}
 
 	post, err := s.repo.GetPost(postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	// my posts
@@ -44,7 +44,7 @@ func (s *Service) GetPost(login string, postId uuid.UUID) (models.Post, error) {
 	// public profile
 	is_public, err := s.repo.CheckProfileIsPublic(post.Author)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	if is_public {
@@ -53,43 +53,43 @@ func (s *Service) GetPost(login string, postId uuid.UUID) (models.Post, error) {
 
 	friends, err := s.repo.ListFriends(post.Author, 1000000, 0)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	if isFriend(friends, login) {
 		return post, nil
 	}
 
-	return models.Post{}, errors.ErrAccessDenied
+	return entity.Post{}, errors.ErrAccessDenied
 }
 
-func (s *Service) ListMyPosts(login string, limit int, offset int) ([]models.Post, error) {
+func (s *Service) ListMyPosts(login string, limit int, offset int) ([]entity.Post, error) {
 	if limit < 0 || offset < 0 {
-		return []models.Post{}, errors.ErrInvalidPaginationParams
+		return []entity.Post{}, errors.ErrInvalidPaginationParams
 	}
 
 	return s.repo.ListPosts(login, limit, offset)
 }
 
-func (s *Service) ListPosts(userLogin string, login string, limit int, offset int) ([]models.Post, error) {
+func (s *Service) ListPosts(userLogin string, login string, limit int, offset int) ([]entity.Post, error) {
 	// pagination params
 	if limit < 0 || offset < 0 {
-		return []models.Post{}, errors.ErrInvalidPaginationParams
+		return []entity.Post{}, errors.ErrInvalidPaginationParams
 	}
 
 	// login exists
 	exists, err := s.repo.CheckLoginExists(login)
 	if err != nil {
-		return []models.Post{}, err
+		return []entity.Post{}, err
 	}
 
 	if !exists {
-		return []models.Post{}, errors.ErrLoginDoesNotExist
+		return []entity.Post{}, errors.ErrLoginDoesNotExist
 	}
 
 	posts, err := s.repo.ListPosts(login, limit, offset)
 	if err != nil {
-		return []models.Post{}, err
+		return []entity.Post{}, err
 	}
 
 	// my posts
@@ -100,7 +100,7 @@ func (s *Service) ListPosts(userLogin string, login string, limit int, offset in
 	// public profile
 	is_public, err := s.repo.CheckProfileIsPublic(login)
 	if err != nil {
-		return []models.Post{}, err
+		return []entity.Post{}, err
 	}
 
 	if is_public {
@@ -110,95 +110,95 @@ func (s *Service) ListPosts(userLogin string, login string, limit int, offset in
 	// follows
 	friends, err := s.repo.ListFriends(login, 1000000, 0)
 	if err != nil {
-		return []models.Post{}, err
+		return []entity.Post{}, err
 	}
 
 	if isFriend(friends, userLogin) {
 		return posts, nil
 	}
 
-	return []models.Post{}, errors.ErrAccessDenied
+	return []entity.Post{}, errors.ErrAccessDenied
 }
 
-func (s *Service) LikePost(login string, postId uuid.UUID) (models.Post, error) {
+func (s *Service) LikePost(login string, postId uuid.UUID) (entity.Post, error) {
 	// id exists
 	exists, err := s.repo.CheckPostIdExists(postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	if !exists {
-		return models.Post{}, errors.ErrPostIdNotFound
+		return entity.Post{}, errors.ErrPostIdNotFound
 	}
 
 	author, err := s.repo.CheckPostAuthor(postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	// public profile
 	is_public, err := s.repo.CheckProfileIsPublic(author)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	if !is_public && login != author {
 		// follows
 		friends, err := s.repo.ListFriends(author, 1000000, 0)
 		if err != nil {
-			return models.Post{}, err
+			return entity.Post{}, err
 		}
 
 		if !isFriend(friends, login) {
-			return models.Post{}, errors.ErrAccessDenied
+			return entity.Post{}, errors.ErrAccessDenied
 		}
 	}
 
 	post, err := s.repo.LikePost(login, postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	return post, nil
 }
 
-func (s *Service) DislikePost(login string, postId uuid.UUID) (models.Post, error) {
+func (s *Service) DislikePost(login string, postId uuid.UUID) (entity.Post, error) {
 	// id exists
 	exists, err := s.repo.CheckPostIdExists(postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	if !exists {
-		return models.Post{}, errors.ErrPostIdNotFound
+		return entity.Post{}, errors.ErrPostIdNotFound
 	}
 
 	author, err := s.repo.CheckPostAuthor(postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	// public profile
 	is_public, err := s.repo.CheckProfileIsPublic(author)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	if !is_public && login != author {
 		// follows
 		friends, err := s.repo.ListFriends(author, 1000000, 0)
 		if err != nil {
-			return models.Post{}, err
+			return entity.Post{}, err
 		}
 
 		if !isFriend(friends, login) {
-			return models.Post{}, errors.ErrAccessDenied
+			return entity.Post{}, errors.ErrAccessDenied
 		}
 	}
 
 	post, err := s.repo.DislikePost(login, postId)
 	if err != nil {
-		return models.Post{}, err
+		return entity.Post{}, err
 	}
 
 	return post, nil

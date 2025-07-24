@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"slices"
 
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 	"github.com/ursulgwopp/pulse-api/internal/errors"
-	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
 func isValidTag(tag string) bool {
@@ -20,7 +20,7 @@ func isValidRegion(region string) bool {
 	return slices.Contains(validRegions, region)
 }
 
-func isFriend(friends []models.FriendInfo, login string) bool {
+func isFriend(friends []entity.FriendInfo, login string) bool {
 	for _, friend := range friends {
 		if friend.Login == login {
 			return true

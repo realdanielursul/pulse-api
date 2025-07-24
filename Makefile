@@ -1,5 +1,5 @@
 run:
-	@go run cmd/main/main.go
+	@go run cmd/main/main.go || true
 
 up:
 	@migrate -path ./migrations -database 'postgres://postgres:postgres@localhost:5432/pulse?sslmode=disable' up

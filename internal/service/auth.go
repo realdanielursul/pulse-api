@@ -5,33 +5,33 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 	"github.com/ursulgwopp/pulse-api/internal/errors"
-	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
-func (s *Service) Register(req models.RegisterRequest) (models.UserProfile, error) {
+func (s *Service) Register(req entity.RegisterRequest) (entity.UserProfile, error) {
 	if err := validateLogin(s, req.Login); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	if err := validateEmail(s, req.Email); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	if err := validatePassword(req.Password); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	if err := validateCountryCode(s, req.CountryCode); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	if err := validatePhone(s, req.Phone); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	if err := validateImage(req.Image); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	req.Password = generatePasswordHash(req.Password)
@@ -39,7 +39,7 @@ func (s *Service) Register(req models.RegisterRequest) (models.UserProfile, erro
 	return s.repo.Register(req)
 }
 
-func (s *Service) SignIn(req models.SignInRequest) (string, error) {
+func (s *Service) SignIn(req entity.SignInRequest) (string, error) {
 	req.Password = generatePasswordHash(req.Password)
 
 	login, err := s.repo.SignIn(req)
@@ -51,7 +51,7 @@ func (s *Service) SignIn(req models.SignInRequest) (string, error) {
 		return "", err
 	}
 
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, &models.TokenClaims{
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, &entity.TokenClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),

@@ -3,31 +3,31 @@ package repository
 import (
 	"context"
 
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 	"github.com/ursulgwopp/pulse-api/internal/errors"
-	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
-func (r *PostgresRepository) Register(req models.RegisterRequest) (models.UserProfile, error) {
+func (r *PostgresRepository) Register(req entity.RegisterRequest) (entity.UserProfile, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()
 
-	var userProfile models.UserProfile
+	var userProfile entity.UserProfile
 
 	query := `INSERT INTO users (login, email, hash_password, country_code, is_public, phone, image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING login, email, country_code, is_public, phone, image`
 	if err := r.db.QueryRowContext(ctx, query, req.Login, req.Email, req.Password, req.CountryCode, req.IsPublic, req.Phone, req.Image).Scan(&userProfile.Login, &userProfile.Email, &userProfile.CountryCode, &userProfile.IsPublic, &userProfile.Phone, &userProfile.Image); err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	query = `INSERT INTO friends (login) VALUES ($1)`
 	_, err := r.db.ExecContext(ctx, query, userProfile.Login)
 	if err != nil {
-		return models.UserProfile{}, err
+		return entity.UserProfile{}, err
 	}
 
 	return userProfile, nil
 }
 
-func (r *PostgresRepository) SignIn(req models.SignInRequest) (string, error) {
+func (r *PostgresRepository) SignIn(req entity.SignInRequest) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()
 

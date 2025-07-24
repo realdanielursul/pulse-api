@@ -4,14 +4,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 	"github.com/ursulgwopp/pulse-api/internal/errors"
-	"github.com/ursulgwopp/pulse-api/internal/models"
 )
 
 func (h *Handler) register(c *gin.Context) {
-	var req models.RegisterRequest
+	var req entity.RegisterRequest
 	if err := c.BindJSON(&req); err != nil {
-		models.NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		entity.NewErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -20,16 +20,16 @@ func (h *Handler) register(c *gin.Context) {
 		if err == errors.ErrInvalidLogin || err == errors.ErrInvalidEmail ||
 			err == errors.ErrInvalidPassword || err == errors.ErrInvalidCountryCode ||
 			err == errors.ErrInvalidPhone || err == errors.ErrInvalidImage {
-			models.NewErrorResponse(c, http.StatusBadRequest, err.Error())
+			entity.NewErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		if err == errors.ErrLoginExists || err == errors.ErrPhoneExists {
-			models.NewErrorResponse(c, http.StatusConflict, err.Error())
+			entity.NewErrorResponse(c, http.StatusConflict, err.Error())
 			return
 		}
 
-		models.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -37,20 +37,20 @@ func (h *Handler) register(c *gin.Context) {
 }
 
 func (h *Handler) signIn(c *gin.Context) {
-	var req models.SignInRequest
+	var req entity.SignInRequest
 	if err := c.BindJSON(&req); err != nil {
-		models.NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		entity.NewErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token, err := h.service.SignIn(req)
 	if err != nil {
 		if err == errors.ErrInvalidUsernameOrPassword {
-			models.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
+			entity.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
 			return
 		}
 
-		models.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

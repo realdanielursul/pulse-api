@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/ursulgwopp/pulse-api/internal/models"
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 )
 
 func (r *PostgresRepository) AddFriend(userLogin string, login string) error {
@@ -42,30 +42,30 @@ func (r *PostgresRepository) RemoveFriend(userLogin string, login string) error 
 	return err
 }
 
-func (r *PostgresRepository) ListFriends(login string, limit int, offset int) ([]models.FriendInfo, error) {
+func (r *PostgresRepository) ListFriends(login string, limit int, offset int) ([]entity.FriendInfo, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()
 
-	var friends []models.FriendInfo
+	var friends []entity.FriendInfo
 
 	query := `WITH unnested_friends AS (SELECT (UNNEST(friends_info)).* AS friend_info FROM friends WHERE login = $1) SELECT * FROM unnested_friends LIMIT $2 OFFSET $3`
 	rows, err := r.db.QueryContext(ctx, query, login, limit, offset)
 	if err != nil {
-		return []models.FriendInfo{}, err
+		return []entity.FriendInfo{}, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var friend models.FriendInfo
+		var friend entity.FriendInfo
 		if err := rows.Scan(&friend.Login, &friend.AddedAt); err != nil {
-			return []models.FriendInfo{}, err
+			return []entity.FriendInfo{}, err
 		}
 
 		friends = append(friends, friend)
 	}
 
 	if rows.Err() != nil {
-		return []models.FriendInfo{}, err
+		return []entity.FriendInfo{}, err
 	}
 
 	return friends, nil

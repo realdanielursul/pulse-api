@@ -5,43 +5,44 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/ursulgwopp/pulse-api/internal/models"
+	"github.com/ursulgwopp/pulse-api/internal/entity"
 )
 
 type Service interface {
-	ListCountries(regions []string) ([]models.Country, error)
-	GetCountryByAlpha2(alpha2 string) (models.Country, error)
+	ListCountries(regions []string) ([]entity.Country, error)
+	GetCountryByAlpha2(alpha2 string) (entity.Country, error)
 
-	Register(req models.RegisterRequest) (models.UserProfile, error)
-	SignIn(req models.SignInRequest) (string, error)
+	Register(req entity.RegisterRequest) (entity.UserProfile, error)
+	SignIn(req entity.SignInRequest) (string, error)
 	ValidateToken(token string) error
 
-	GetMyProfile(login string) (models.UserProfile, error)
-	UpdateProfile(login string, req models.UpdateProfileRequest) (models.UserProfile, error)
-	UpdatePassword(login string, req models.UpdatePasswordRequest) error
-	GetProfileByLogin(userLogin string, profileLogin string) (models.UserProfile, error)
+	GetMyProfile(login string) (entity.UserProfile, error)
+	UpdateProfile(login string, req entity.UpdateProfileRequest) (entity.UserProfile, error)
+	UpdatePassword(login string, req entity.UpdatePasswordRequest) error
+	GetProfileByLogin(userLogin string, profileLogin string) (entity.UserProfile, error)
 
 	AddFriend(userLogin string, login string) error
 	RemoveFriend(userLogin string, login string) error
-	ListFriends(login string, limit int, offset int) ([]models.FriendInfo, error)
+	ListFriends(login string, limit int, offset int) ([]entity.FriendInfo, error)
 
-	NewPost(login string, req models.NewPostRequest) (models.Post, error)
-	GetPost(login string, postId uuid.UUID) (models.Post, error)
-	ListMyPosts(login string, limit int, offset int) ([]models.Post, error)
-	ListPosts(userLogin string, login string, limit int, offset int) ([]models.Post, error)
-	LikePost(login string, postId uuid.UUID) (models.Post, error)
-	DislikePost(login string, postId uuid.UUID) (models.Post, error)
+	NewPost(login string, req entity.NewPostRequest) (entity.Post, error)
+	GetPost(login string, postId uuid.UUID) (entity.Post, error)
+	ListMyPosts(login string, limit int, offset int) ([]entity.Post, error)
+	ListPosts(userLogin string, login string, limit int, offset int) ([]entity.Post, error)
+	LikePost(login string, postId uuid.UUID) (entity.Post, error)
+	DislikePost(login string, postId uuid.UUID) (entity.Post, error)
 }
 
 type Handler struct {
 	service Service
 }
 
-func NewTransport(service Service) *Handler {
+func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	// Serve the OpenAPI YAML file
