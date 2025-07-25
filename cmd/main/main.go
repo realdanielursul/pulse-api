@@ -9,11 +9,11 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
-	pulseapi "github.com/ursulgwopp/pulse-api"
 	"github.com/ursulgwopp/pulse-api/config"
 	"github.com/ursulgwopp/pulse-api/internal/handler"
 	"github.com/ursulgwopp/pulse-api/internal/repository"
 	"github.com/ursulgwopp/pulse-api/internal/service"
+	"github.com/ursulgwopp/pulse-api/pkg/httpserver"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 
 	cfg, err := config.NewConfig("./config/local.yaml")
 	if err != nil {
-		logrus.Fatalf("error initializing configs: %s", err.Error())
+		logrus.Fatalf("error initializing config: %s", err.Error())
 	}
 
 	db, err := repository.NewPostgresDB(config.Postgres{
@@ -40,20 +40,18 @@ func main() {
 	service := service.NewService(repo)
 	handler := handler.NewHandler(service)
 
-	srv := &pulseapi.Server{}
+	srv := &httpserver.Server{}
 	go func() {
 		if err := srv.Run(cfg.HTTP.Port, handler.InitRoutes()); err != nil && err != http.ErrServerClosed {
 			logrus.Fatalf("error running http server: %s", err.Error())
 		}
 	}()
 
-	logrus.Print("App Started")
+	logrus.Printf("App '%s %s' Started", cfg.App.Name, cfg.App.Version)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
-
-	logrus.Print("App Shutting Down")
 
 	if err := srv.Shutdown(context.Background()); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
@@ -62,4 +60,6 @@ func main() {
 	if err := db.Close(); err != nil {
 		logrus.Errorf("error occured on db connection close: %s", err.Error())
 	}
+
+	logrus.Printf("App '%s %s' Shutted Down", cfg.App.Name, cfg.App.Version)
 }

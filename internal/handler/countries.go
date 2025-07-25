@@ -13,12 +13,14 @@ func (h *Handler) listCountries(c *gin.Context) {
 
 	countries, err := h.service.ListCountries(regions)
 	if err != nil {
-		if err == errors.ErrInvalidRegion {
+		switch err {
+		case errors.ErrInvalidRegion:
 			entity.NewErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
+
+		default:
+			entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -34,12 +36,14 @@ func (h *Handler) getCountryByAlpha2(c *gin.Context) {
 
 	country, err := h.service.GetCountryByAlpha2(alpha2)
 	if err != nil {
-		if err == errors.ErrCountryNotFound {
+		switch err {
+		case errors.ErrCountryNotFound:
 			entity.NewErrorResponse(c, http.StatusNotFound, err.Error())
-			return
+
+		default:
+			entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

@@ -17,19 +17,19 @@ func (h *Handler) register(c *gin.Context) {
 
 	userProfile, err := h.service.Register(req)
 	if err != nil {
-		if err == errors.ErrInvalidLogin || err == errors.ErrInvalidEmail ||
-			err == errors.ErrInvalidPassword || err == errors.ErrInvalidCountryCode ||
-			err == errors.ErrInvalidPhone || err == errors.ErrInvalidImage {
+		switch err {
+		case errors.ErrInvalidLogin, errors.ErrInvalidEmail,
+			errors.ErrInvalidPassword, errors.ErrInvalidCountryCode,
+			errors.ErrInvalidPhone, errors.ErrInvalidImage:
 			entity.NewErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
 
-		if err == errors.ErrLoginExists || err == errors.ErrPhoneExists {
+		case errors.ErrLoginExists, errors.ErrPhoneExists, errors.ErrEmailExists:
 			entity.NewErrorResponse(c, http.StatusConflict, err.Error())
-			return
+
+		default:
+			entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -45,12 +45,14 @@ func (h *Handler) signIn(c *gin.Context) {
 
 	token, err := h.service.SignIn(req)
 	if err != nil {
-		if err == errors.ErrInvalidUsernameOrPassword {
+		switch err {
+		case errors.ErrInvalidUsernameOrPassword:
 			entity.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
-			return
+
+		default:
+			entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		entity.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

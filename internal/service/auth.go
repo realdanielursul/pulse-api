@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"os"
 	"time"
 
@@ -44,7 +45,7 @@ func (s *Service) SignIn(req entity.SignInRequest) (string, error) {
 
 	login, err := s.repo.SignIn(req)
 	if err != nil {
-		if err.Error() == "sql: no rows in result set" {
+		if err == sql.ErrNoRows {
 			return "", errors.ErrInvalidUsernameOrPassword
 		}
 

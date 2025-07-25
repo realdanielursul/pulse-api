@@ -1,4 +1,4 @@
-package pulseapi
+package httpserver
 
 import (
 	"context"
