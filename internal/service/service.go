@@ -16,7 +16,7 @@ type Service struct {
 	tokenTTL       time.Duration
 }
 
-func NewService(repo Repository, passwordHasher hasher.SHA1Hasher, signKey string, tokenTTL time.Duration, salt string) *Service {
+func NewService(repo Repository, passwordHasher hasher.SHA1Hasher, signKey string, tokenTTL time.Duration) *Service {
 	return &Service{
 		repo:           repo,
 		passwordHasher: passwordHasher,
