@@ -3,10 +3,13 @@ package service
 import (
 	"time"
 
+	"github.com/realdanielursul/pulse-api/internal/model"
 	"github.com/realdanielursul/pulse-api/pkg/hasher"
 )
 
 type Repository interface {
+	ListCountries(regions []string) ([]model.Country, error)
+	GetCountryByAlpha2(alpha2 string) (model.Country, error)
 }
 
 type Service struct {
