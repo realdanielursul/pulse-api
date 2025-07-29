@@ -118,12 +118,12 @@ type PostOutput struct {
 }
 
 type Post interface {
-	CreatePost(ctx context.Context, req *PostCreateInput) (*PostOutput, error)
-	GetPost(ctx context.Context, postID, requesterLogin string) (*PostOutput, error)
+	CreatePost(ctx context.Context, input *PostCreateInput) (*PostOutput, error)
+	GetPost(ctx context.Context, postId, requesterLogin string) (*PostOutput, error)
 	GetMyFeed(ctx context.Context, userLogin string, limit, offset int) ([]*PostOutput, error)
 	GetUserFeed(ctx context.Context, login, requesterLogin string, limit, offset int) ([]*PostOutput, error)
-	LikePost(ctx context.Context, postID, userLogin string) (*PostOutput, error)
-	DislikePost(ctx context.Context, postID, userLogin string) (*PostOutput, error)
+	LikePost(ctx context.Context, postId, userLogin string) (*PostOutput, error)
+	DislikePost(ctx context.Context, postId, userLogin string) (*PostOutput, error)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,4 +142,14 @@ type Services struct {
 	Country Country
 	Friend  Friend
 	Post    Post
+}
+
+func NewService(deps ServicesDependencies) *Services {
+	return &Services{
+		Auth:    NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		User:    NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		Country: NewCountryService(deps.Repos.Country, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		Friend:  NewFriendService(deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		Post:    NewPostService(deps.Repos.Post, deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
+	}
 }
