@@ -17,7 +17,7 @@ func NewSHA1Hasher(salt string) SHA1Hasher {
 	return SHA1Hasher{salt: salt}
 }
 
-func (h *SHA1Hasher) Hash(password string) string {
+func (h SHA1Hasher) Hash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))
 

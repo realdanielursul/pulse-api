@@ -10,7 +10,6 @@ import (
 
 const operationTimeout = 3 * time.Second
 
-// UserRepository отвечает за хранение и получение данных о пользователях
 type User interface {
 	CreateUser(ctx context.Context, user *entity.User) (*entity.User, error)
 	GetUserByLogin(ctx context.Context, login string) (*entity.User, error)
@@ -21,21 +20,18 @@ type User interface {
 	UpdatePassword(ctx context.Context, login, newPasswordHash string) error
 }
 
-// TokenRepository отвечает за хранение и валидацию токенов
 type Token interface {
 	CreateToken(ctx context.Context, token *entity.Token) error
 	GetToken(ctx context.Context, tokenString string) (*entity.Token, error)
 	InvalidateUserTokens(ctx context.Context, login string) error
 }
 
-// CountryRepository отвечает за хранение и получение данных о странах
 type Country interface {
 	GetAllCountries(ctx context.Context) ([]*entity.Country, error)
 	GetCountriesByRegion(ctx context.Context, regions []string) ([]*entity.Country, error)
 	GetCountryByAlpha2(ctx context.Context, alpha2 string) (*entity.Country, error)
 }
 
-// FriendsRepository отвечает за хранение и получение данных о друзьях
 type Friend interface {
 	AddFriend(ctx context.Context, userLogin, friendLogin string) error
 	RemoveFriend(ctx context.Context, userLogin, friendLogin string) error
@@ -43,7 +39,6 @@ type Friend interface {
 	IsFriend(ctx context.Context, userLogin, friendLogin string) (bool, error)
 }
 
-// PostsRepository отвечает за хранение и получение данных о постах
 type Post interface {
 	CreatePost(ctx context.Context, post *entity.Post) (*entity.Post, error)
 	GetPostById(ctx context.Context, postId string) (*entity.Post, error)

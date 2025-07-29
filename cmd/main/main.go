@@ -1,14 +1,21 @@
 package main
 
 import (
+	"context"
+	"fmt"
+
 	_ "github.com/lib/pq"
 	"github.com/realdanielursul/pulse-api/config"
+	"github.com/realdanielursul/pulse-api/internal/repository"
+	"github.com/realdanielursul/pulse-api/internal/service"
+	"github.com/realdanielursul/pulse-api/pkg/hasher"
 	"github.com/realdanielursul/pulse-api/pkg/logger"
 	"github.com/realdanielursul/pulse-api/pkg/postgres"
 	"github.com/sirupsen/logrus"
 )
 
 // SORT COUNTRIES
+// GEt POST BY ID (string or uuid)
 
 func main() {
 	logger.SetLogrus()
@@ -23,109 +30,27 @@ func main() {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
+	repositories := repository.NewRepositories(db)
 
-	{
-		// repo := repository.NewPostRepository(db)
-
-		// ctx := context.Background()
-
-		// fmt.Println(repo.DislikePost(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89", "danixx"))
-		// fmt.Println(repo.DislikePost(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89", "danixx1"))
-		// fmt.Println(repo.DislikePost(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89", "danixx2"))
-		// fmt.Println(repo.GetPostReactionsCount(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89"))
+	deps := service.ServicesDependencies{
+		Repos:    repositories,
+		Hasher:   hasher.NewSHA1Hasher(cfg.Hasher.Salt),
+		SignKey:  cfg.JWT.SignKey,
+		TokenTTL: cfg.JWT.TokenTTL,
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	{
-		// repo := repository.NewFriendRepository(db)
+		authService := service.NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL)
+		ctx := context.Background()
 
-		// ctx := context.Background()
-
-		// arr, _ := repo.GetFriends(ctx, "danixx", 0, 10)
-		// for _, a := range arr {
-		// 	fmt.Println(a)
-		// }
-	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	{
-		// repo := repository.NewCountryRepository(db)
-
-		// ctx := context.Background()
-
-		// fmt.Println(repo.GetCountryByAlpha2(ctx, ""))
-	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	{
-		// repo := repository.NewTokenRepository(db)
-
-		// ctx := context.Background()
-
-		// fmt.Println(repo.CreateToken(ctx, &entity.Token{"danixx", "token1", true}))
-		// fmt.Println(repo.GetToken(ctx, "token1"))
-		// fmt.Println(repo.InvalidateUserTokens(ctx, "danixx"))
-	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	{
-		// repo := repository.NewUserRepository(db)
-
-		// ctx := context.Background()
-
-		// login := "danixx2"
-		// email := "ursuldm2@gmail.com"
-		// passwordHash := "PASSWORD"
-		// countryCode := "RU"
-		// isPublic := true
-		// phone := "+792196915652"
-		// image := "https://link/to/image"
-
-		// // CREATE
-		// fmt.Println(repo.CreateUser(ctx, &entity.User{
-		// 	Login:        login,
-		// 	Email:        email,
-		// 	PasswordHash: passwordHash,
-		// 	CountryCode:  countryCode,
-		// 	IsPublic:     isPublic,
-		// 	Phone:        phone,
-		// 	Image:        image,
-		// }))
-
-		// // GET BY LOGIN
-		// fmt.Println(repo.GetUserByLogin(ctx, login))
-
-		// // GET BY EMAIL
-		// fmt.Println(repo.GetUserByEmail(ctx, email))
-
-		// // GET BY PHONE
-		// fmt.Println(repo.GetUserByPhone(ctx, phone))
-
-		// // GET BY LOGIN AND PASSWORD
-		// fmt.Println(repo.GetUserByLoginAndPassword(ctx, login, passwordHash))
-
-		// // UPDATE
-		// fmt.Println(repo.UpdateUser(ctx, login, nil, nil, nil, nil))
-
-		// // UPDATE PASSWORD
-		// fmt.Println(repo.UpdatePassword(ctx, login, "newPasswordHash"))
-
-		// // GET BY LOGIN
-		// fmt.Println(repo.GetUserByLogin(ctx, login))
+		fmt.Println(authService.Register(ctx, &service.AuthRegisterInput{
+			Login:       "danixx",
+			Email:       "ursuldm@gmail.com",
+			Password:    "pizdaaaaa",
+			CountryCode: "DE",
+			IsPublic:    true,
+			Phone:       "+79219691565",
+			Image:       "https://link/to/image",
+		}))
 	}
 }
