@@ -4,19 +4,16 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/realdanielursul/pulse-api/internal/service"
+	"github.com/sirupsen/logrus"
 )
 
-type Service interface {
-	// ListCountries(regions []string) ([]model.Country, error)
-	// GetCountryByAlpha2(alpha2 string) (model.Country, error)
-}
-
 type Handler struct {
-	service Service
+	services *service.Services
 }
 
-func NewHandler(service Service) *Handler {
-	return &Handler{service: service}
+func NewHandler(services *service.Services) *Handler {
+	return &Handler{services: services}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
@@ -71,9 +68,18 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			c.String(http.StatusOK, "ok")
 		})
 
-		// api.GET("/countries", h.listCountries)
-		// api.GET("/countries/:alpha2", h.getCountryByAlpha2)
+		api.GET("/countries", h.listCountries)
+		api.GET("/countries/:alpha2", h.getCountry)
 	}
 
 	return router
+}
+
+type ErrorResponse struct {
+	Reason interface{} `json:"reason"`
+}
+
+func NewErrorResponse(c *gin.Context, statusCode int, message string) {
+	logrus.Error(message)
+	c.AbortWithStatusJSON(statusCode, ErrorResponse{Reason: message})
 }

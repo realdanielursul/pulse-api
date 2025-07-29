@@ -69,6 +69,10 @@ func (s *CountryService) ListCountries(ctx context.Context, regions []string) ([
 func (s *CountryService) GetCountry(ctx context.Context, alpha2 string) (*CountryOutput, error) {
 	country, err := s.countryRepo.GetCountryByAlpha2(ctx, alpha2)
 	if err != nil {
+		if country == nil {
+			return nil, ErrCountryNotFound
+		}
+
 		return nil, err
 	}
 

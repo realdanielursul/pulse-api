@@ -144,7 +144,7 @@ type Services struct {
 	Post    Post
 }
 
-func NewService(deps ServicesDependencies) *Services {
+func NewServices(deps ServicesDependencies) *Services {
 	return &Services{
 		Auth:    NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL),
 		User:    NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
