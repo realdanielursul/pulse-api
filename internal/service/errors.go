@@ -15,4 +15,6 @@ var (
 
 	ErrCannotSignToken  = errors.New("cannot sign token")
 	ErrCannotParseToken = errors.New("cannot parse token")
+
+	ErrAccessDenied = errors.New("access denied")
 )

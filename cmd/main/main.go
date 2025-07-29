@@ -37,16 +37,32 @@ func main() {
 	}
 
 	{
+		// userService := service.NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL)
+		// ctx := context.Background()
+
+		// fmt.Println(userService.UpdateProfile(ctx, "danixx", &service.UserUpdateProfileInput{
+		// 	CountryCode: nil,
+		// 	IsPublic:    nil,
+		// 	Phone:       nil,
+		// 	Image:       nil,
+		// }))
+
+		// fmt.Println(userService.GetMyProfile(ctx, "danixx"))
+
+		// fmt.Println(userService.GetProfile(ctx, "danixx2", "danixx"))
+	}
+
+	{
 		// authService := service.NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL)
 		// ctx := context.Background()
 
 		// fmt.Println(authService.Register(ctx, &service.AuthRegisterInput{
-		// 	Login:       "danixx",
-		// 	Email:       "ursuldm@gmail.com",
+		// 	Login:       "danixx2",
+		// 	Email:       "ursuldm@gmail.com2",
 		// 	Password:    "pizdaaaaa",
 		// 	CountryCode: "DE",
-		// 	IsPublic:    true,
-		// 	Phone:       "+79219691565",
+		// 	IsPublic:    false,
+		// 	Phone:       "+792196915652",
 		// 	Image:       "https://link/to/image",
 		// }))
 
