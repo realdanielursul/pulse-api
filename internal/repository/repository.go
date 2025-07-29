@@ -37,7 +37,7 @@ type Country interface {
 
 // FriendsRepository отвечает за хранение и получение данных о друзьях
 type Friend interface {
-	AddFriend(ctx context.Context, userID, friendID string) error
+	AddFriend(ctx context.Context, userLogin, friendLogin string) error
 	RemoveFriend(ctx context.Context, userID, friendID string) error
 	GetFriends(ctx context.Context, userID string, limit, offset int) ([]*entity.Friend, error)
 	IsFriend(ctx context.Context, userID, friendID string) (bool, error)
@@ -63,10 +63,10 @@ type Repositories struct {
 
 func NewRepositories(db *sqlx.DB) *Repositories {
 	return &Repositories{
-		User:  NewUserRepository(db),
-		Token: NewTokenRepository(db),
-		// Country: NewCountryRepository(db),
-		// Friend:  NewFriendRepository(db),
+		User:    NewUserRepository(db),
+		Token:   NewTokenRepository(db),
+		Country: NewCountryRepository(db),
+		Friend:  NewFriendRepository(db),
 		// Post:    NewPostRepository(db),
 	}
 }

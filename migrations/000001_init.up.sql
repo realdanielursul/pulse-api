@@ -21,6 +21,12 @@ CREATE TABLE tokens (
   is_valid BOOLEAN NOT NULL
 );
 
+CREATE TABLE friends (
+  user_login TEXT NOT NULL,
+  friend_login TEXT NOT NULL,
+  added_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
 INSERT INTO countries (name, alpha2, alpha3, region) VALUES
   ('Afghanistan','AF','AFG','Asia'),
   ('Åland Islands','AX','ALA','Europe'),
