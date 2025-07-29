@@ -96,7 +96,7 @@ type FriendOutput struct {
 type Friend interface {
 	AddFriend(ctx context.Context, userLogin, friendLogin string) error
 	RemoveFriend(ctx context.Context, userLogin, friendLogin string) error
-	ListFriends(ctx context.Context, userLogin string, limit, offset int) ([]*Friend, error)
+	ListFriends(ctx context.Context, userLogin string, limit, offset int) ([]*FriendOutput, error)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
