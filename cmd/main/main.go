@@ -1,6 +1,9 @@
 package main
 
 import (
+	"context"
+	"fmt"
+
 	_ "github.com/lib/pq"
 	"github.com/realdanielursul/pulse-api/config"
 	"github.com/realdanielursul/pulse-api/internal/repository"
@@ -13,6 +16,7 @@ import (
 
 // SORT COUNTRIES
 // GET POST BY ID (string or uuid)
+// RENAME FRIENDS FIELDS (maybe follower?)
 
 func main() {
 	logger.SetLogrus()
@@ -37,6 +41,13 @@ func main() {
 	}
 
 	{
+		countryService := service.NewCountryService(deps.Repos.Country, deps.Hasher, deps.SignKey, deps.TokenTTL)
+		ctx := context.Background()
+
+		fmt.Println(countryService.GetCountry(ctx, "DE"))
+	}
+
+	{
 		// userService := service.NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL)
 		// ctx := context.Background()
 
@@ -49,7 +60,7 @@ func main() {
 
 		// fmt.Println(userService.GetMyProfile(ctx, "danixx"))
 
-		// fmt.Println(userService.GetProfile(ctx, "danixx2", "danixx"))
+		// fmt.Println(userService.GetProfile(ctx, "danixx", "danixx2"))
 	}
 
 	{

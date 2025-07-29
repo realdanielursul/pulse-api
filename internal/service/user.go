@@ -49,7 +49,7 @@ func (s *UserService) GetProfile(ctx context.Context, login string, requesterLog
 		return user, nil
 	}
 
-	isFriend, err := s.friendRepo.IsFriend(ctx, login, requesterLogin)
+	isFriend, err := s.friendRepo.IsFriend(ctx, requesterLogin, login)
 	if err != nil {
 		return nil, err
 	}

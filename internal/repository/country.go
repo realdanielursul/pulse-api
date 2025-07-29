@@ -19,8 +19,8 @@ func (r *CountryRepository) GetAllCountries(ctx context.Context) ([]*entity.Coun
 	ctx, cancel := context.WithTimeout(context.Background(), operationTimeout)
 	defer cancel()
 
-	countries := make([]*entity.Country, 100)
-	sql := `SELECT name, alpha2, alpha3, region FROM countries ORDER BY alpha2 ASC`
+	countries := make([]*entity.Country, 0, 100)
+	sql := `SELECT name, alpha2, alpha3, region FROM countries`
 	rows, err := r.QueryContext(ctx, sql)
 	if err != nil {
 		return nil, err
