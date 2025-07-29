@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/realdanielursul/pulse-api/internal/entity"
@@ -72,7 +71,7 @@ func (r *FriendRepository) IsFriend(ctx context.Context, userLogin, friendLogin 
 	var exists bool
 	query := `SELECT EXISTS(SELECT 1 FROM friends WHERE user_login = $1 AND friend_login = $2)`
 	if err := r.QueryRowContext(ctx, query, userLogin, friendLogin).Scan(&exists); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if err == sql.ErrNoRows {
 			return false, nil
 		}
 

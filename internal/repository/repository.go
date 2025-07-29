@@ -38,19 +38,19 @@ type Country interface {
 // FriendsRepository отвечает за хранение и получение данных о друзьях
 type Friend interface {
 	AddFriend(ctx context.Context, userLogin, friendLogin string) error
-	RemoveFriend(ctx context.Context, userID, friendID string) error
-	GetFriends(ctx context.Context, userID string, limit, offset int) ([]*entity.Friend, error)
-	IsFriend(ctx context.Context, userID, friendID string) (bool, error)
+	RemoveFriend(ctx context.Context, userLogin, friendLogin string) error
+	GetFriends(ctx context.Context, userLogin string, limit, offset int) ([]*entity.Friend, error)
+	IsFriend(ctx context.Context, userLogin, friendLogin string) (bool, error)
 }
 
 // PostsRepository отвечает за хранение и получение данных о постах
 type Post interface {
-	CreatePost(ctx context.Context, post *entity.Post) error
-	GetPostByID(ctx context.Context, postID string) (*entity.Post, error)
-	GetUserPosts(ctx context.Context, userID string, limit, offset int) ([]*entity.Post, error)
-	LikePost(ctx context.Context, postID, userID string) error
-	DislikePost(ctx context.Context, postID, userID string) error
-	GetPostReactionsCount(ctx context.Context, postID string) (likes, dislikes int, err error)
+	CreatePost(ctx context.Context, post *entity.Post) (*entity.Post, error)
+	GetPostById(ctx context.Context, postId string) (*entity.Post, error)
+	GetUserPosts(ctx context.Context, userLogin string, limit, offset int) ([]*entity.Post, error)
+	LikePost(ctx context.Context, postId, userLogin string) error
+	DislikePost(ctx context.Context, postId, userLogin string) error
+	GetPostReactionsCount(ctx context.Context, postId string) (likes, dislikes int, err error)
 }
 
 type Repositories struct {
@@ -67,6 +67,6 @@ func NewRepositories(db *sqlx.DB) *Repositories {
 		Token:   NewTokenRepository(db),
 		Country: NewCountryRepository(db),
 		Friend:  NewFriendRepository(db),
-		// Post:    NewPostRepository(db),
+		Post:    NewPostRepository(db),
 	}
 }

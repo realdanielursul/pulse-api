@@ -27,6 +27,21 @@ CREATE TABLE friends (
   added_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE posts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  content TEXT NOT NULL,
+  author TEXT NOT NULL REFERENCES users(login),
+  tags TEXT[] DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE post_reactions (
+  post_id UUID NOT NULL,
+  user_login TEXT NOT NULL,
+  reaction_type TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
 INSERT INTO countries (name, alpha2, alpha3, region) VALUES
   ('Afghanistan','AF','AFG','Asia'),
   ('Åland Islands','AX','ALA','Europe'),
