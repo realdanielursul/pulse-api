@@ -43,7 +43,7 @@ type AuthUpdatePasswordInput struct {
 type Auth interface {
 	Register(ctx context.Context, input *AuthRegisterInput) (*AuthRegisterOutput, error)
 	SignIn(ctx context.Context, input *AuthSignInInput) (string, error)
-	ValidateToken(ctx context.Context, tokenString string) (bool, error)
+	ValidateToken(ctx context.Context, tokenString string) (string, bool, error)
 	UpdatePassword(ctx context.Context, userLogin string, input *AuthUpdatePasswordInput) error
 }
 

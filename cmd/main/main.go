@@ -1,9 +1,6 @@
 package main
 
 import (
-	"context"
-	"fmt"
-
 	_ "github.com/lib/pq"
 	"github.com/realdanielursul/pulse-api/config"
 	"github.com/realdanielursul/pulse-api/internal/repository"
@@ -15,7 +12,7 @@ import (
 )
 
 // SORT COUNTRIES
-// GEt POST BY ID (string or uuid)
+// GET POST BY ID (string or uuid)
 
 func main() {
 	logger.SetLogrus()
@@ -40,17 +37,29 @@ func main() {
 	}
 
 	{
-		authService := service.NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL)
-		ctx := context.Background()
+		// authService := service.NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL)
+		// ctx := context.Background()
 
-		fmt.Println(authService.Register(ctx, &service.AuthRegisterInput{
-			Login:       "danixx",
-			Email:       "ursuldm@gmail.com",
-			Password:    "pizdaaaaa",
-			CountryCode: "DE",
-			IsPublic:    true,
-			Phone:       "+79219691565",
-			Image:       "https://link/to/image",
-		}))
+		// fmt.Println(authService.Register(ctx, &service.AuthRegisterInput{
+		// 	Login:       "danixx",
+		// 	Email:       "ursuldm@gmail.com",
+		// 	Password:    "pizdaaaaa",
+		// 	CountryCode: "DE",
+		// 	IsPublic:    true,
+		// 	Phone:       "+79219691565",
+		// 	Image:       "https://link/to/image",
+		// }))
+
+		// fmt.Println(authService.SignIn(ctx, &service.AuthSignInInput{
+		// 	Login:    "danixx",
+		// 	Password: "pizdaaaaa",
+		// }))
+
+		// fmt.Println(authService.ValidateToken(ctx, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTM4MDg2NDUsImlhdCI6MTc1MzgwMTQ0NSwiTG9naW4iOiJkYW5peHgifQ.5z09po2ovYqZ8TiqkA21KbtoL6LLoHan8vXFivWXa4c"))
+
+		// fmt.Println(authService.UpdatePassword(ctx, "danixx", &service.AuthUpdatePasswordInput{
+		// 	OldPassword: "pizdaaaaa",
+		// 	NewPassword: "pizdaa",
+		// }))
 	}
 }
