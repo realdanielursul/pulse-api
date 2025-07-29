@@ -11,8 +11,14 @@ CREATE TABLE users (
   password_hash TEXT NOT NULL,
   country_code TEXT NOT NULL,
   is_public BOOLEAN NOT NULL,
-  phone TEXT UNIQUE DEFAULT NULL,
-  image TEXT DEFAULT NULL
+  phone TEXT UNIQUE DEFAULT '',
+  image TEXT DEFAULT ''
+);
+
+CREATE TABLE tokens (
+  login TEXT NOT NULL,
+  token_string TEXT NOT NULL,
+  is_valid BOOLEAN NOT NULL
 );
 
 INSERT INTO countries (name, alpha2, alpha3, region) VALUES

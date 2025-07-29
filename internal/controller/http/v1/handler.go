@@ -4,12 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/realdanielursul/pulse-api/internal/model"
 )
 
 type Service interface {
-	ListCountries(regions []string) ([]model.Country, error)
-	GetCountryByAlpha2(alpha2 string) (model.Country, error)
+	// ListCountries(regions []string) ([]model.Country, error)
+	// GetCountryByAlpha2(alpha2 string) (model.Country, error)
 }
 
 type Handler struct {
@@ -72,8 +71,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			c.String(http.StatusOK, "ok")
 		})
 
-		api.GET("/countries", h.listCountries)
-		api.GET("/countries/:alpha2", h.getCountryByAlpha2)
+		// api.GET("/countries", h.listCountries)
+		// api.GET("/countries/:alpha2", h.getCountryByAlpha2)
 	}
 
 	return router

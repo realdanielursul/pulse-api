@@ -1,19 +1,8 @@
 package main
 
 import (
-	"context"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-
 	_ "github.com/lib/pq"
 	"github.com/realdanielursul/pulse-api/config"
-	v1 "github.com/realdanielursul/pulse-api/internal/controller/http/v1"
-	"github.com/realdanielursul/pulse-api/internal/repository"
-	"github.com/realdanielursul/pulse-api/internal/service"
-	"github.com/realdanielursul/pulse-api/pkg/hasher"
-	"github.com/realdanielursul/pulse-api/pkg/httpserver"
 	"github.com/realdanielursul/pulse-api/pkg/logger"
 	"github.com/realdanielursul/pulse-api/pkg/postgres"
 	"github.com/sirupsen/logrus"
@@ -32,30 +21,67 @@ func main() {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	repository := repository.NewPostgresRepository(db)
-	service := service.NewService(repository, hasher.NewSHA1Hasher(cfg.Hasher.Salt), cfg.JWT.SignKey, cfg.JWT.TokenTTL)
-	handler := v1.NewHandler(service)
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	srv := &httpserver.Server{}
-	go func() {
-		if err := srv.Run(cfg.HTTP.Port, handler.InitRoutes()); err != nil && err != http.ErrServerClosed {
-			logrus.Fatalf("error running http server: %s", err.Error())
-		}
-	}()
+	{
+		// repo := repository.NewTokenRepository(db)
 
-	logrus.Printf("App '%s %s' Started", cfg.App.Name, cfg.App.Version)
+		// ctx := context.Background()
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
-	<-quit
-
-	if err := srv.Shutdown(context.Background()); err != nil {
-		logrus.Errorf("error occured on server shutting down: %s", err.Error())
+		// fmt.Println(repo.CreateToken(ctx, &entity.Token{"danixx", "token1", true}))
+		// fmt.Println(repo.GetToken(ctx, "token1"))
+		// fmt.Println(repo.InvalidateUserTokens(ctx, "danixx"))
 	}
 
-	if err := db.Close(); err != nil {
-		logrus.Errorf("error occured on db connection close: %s", err.Error())
-	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	logrus.Printf("App '%s %s' Shutted Down", cfg.App.Name, cfg.App.Version)
+	{
+		// repo := repository.NewUserRepository(db)
+
+		// ctx := context.Background()
+
+		// login := "danixx"
+		// email := "ursuldm@gmail.com"
+		// passwordHash := "PASSWORD"
+		// countryCode := "RU"
+		// isPublic := true
+		// phone := "+79219691565"
+		// image := "https://link/to/image"
+
+		// // CREATE
+		// fmt.Println(repo.CreateUser(ctx, &entity.User{
+		// 	Login:        login,
+		// 	Email:        email,
+		// 	PasswordHash: passwordHash,
+		// 	CountryCode:  countryCode,
+		// 	IsPublic:     isPublic,
+		// 	Phone:        phone,
+		// 	Image:        image,
+		// }))
+
+		// // GET BY LOGIN
+		// fmt.Println(repo.GetUserByLogin(ctx, login))
+
+		// // GET BY EMAIL
+		// fmt.Println(repo.GetUserByEmail(ctx, email))
+
+		// // GET BY PHONE
+		// fmt.Println(repo.GetUserByPhone(ctx, phone))
+
+		// // GET BY LOGIN AND PASSWORD
+		// fmt.Println(repo.GetUserByLoginAndPassword(ctx, login, passwordHash))
+
+		// // UPDATE
+		// fmt.Println(repo.UpdateUser(ctx, login, nil, nil, nil, nil))
+
+		// // UPDATE PASSWORD
+		// fmt.Println(repo.UpdatePassword(ctx, login, "newPasswordHash"))
+
+		// // GET BY LOGIN
+		// fmt.Println(repo.GetUserByLogin(ctx, login))
+	}
 }
