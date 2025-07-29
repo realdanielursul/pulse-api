@@ -1,13 +1,13 @@
-CREATE TABLE countries (
+CREATE TABLE IF NOT EXISTS countries (
   name TEXT,
   alpha2 TEXT,
   alpha3 TEXT,
   region TEXT
 );
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   login TEXT UNIQUE NOT NULL,
-  email TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   country_code TEXT NOT NULL,
   is_public BOOLEAN NOT NULL,
@@ -15,19 +15,19 @@ CREATE TABLE users (
   image TEXT DEFAULT ''
 );
 
-CREATE TABLE tokens (
+CREATE TABLE IF NOT EXISTS tokens (
   login TEXT NOT NULL,
   token_string TEXT NOT NULL,
   is_valid BOOLEAN NOT NULL
 );
 
-CREATE TABLE friends (
+CREATE TABLE IF NOT EXISTS friends (
   user_login TEXT NOT NULL,
   friend_login TEXT NOT NULL,
   added_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   content TEXT NOT NULL,
   author TEXT NOT NULL REFERENCES users(login),
@@ -35,11 +35,12 @@ CREATE TABLE posts (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE post_reactions (
+CREATE TABLE IF NOT EXISTS post_reactions (
   post_id UUID NOT NULL,
   user_login TEXT NOT NULL,
   reaction_type TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (post_id, user_login)
 );
 
 INSERT INTO countries (name, alpha2, alpha3, region) VALUES

@@ -104,7 +104,7 @@ func (r *PostRepository) LikePost(ctx context.Context, postId, userLogin string)
 	_, err = tx.ExecContext(ctx, `
 		INSERT INTO post_reactions (post_id, user_login, reaction_type, created_at)
 		VALUES ($1, $2, 'like', $3)
-		ON CONFLICT (post_id, user_id) DO UPDATE 
+		ON CONFLICT (post_id, user_login) DO UPDATE 
 		SET reaction_type = 'like', created_at = $3`,
 		postId, userLogin, time.Now())
 	if err != nil {
@@ -113,6 +113,7 @@ func (r *PostRepository) LikePost(ctx context.Context, postId, userLogin string)
 
 	return tx.Commit()
 }
+
 func (r *PostRepository) DislikePost(ctx context.Context, postId, userLogin string) error {
 	ctx, cancel := context.WithTimeout(ctx, operationTimeout)
 	defer cancel()
@@ -133,8 +134,8 @@ func (r *PostRepository) DislikePost(ctx context.Context, postId, userLogin stri
 
 	_, err = tx.ExecContext(ctx, `
 		INSERT INTO post_reactions (post_id, user_login, reaction_type, created_at)
-		VALUES ($1, $2, 'like', $3)
-		ON CONFLICT (post_id, user_id) DO UPDATE 
+		VALUES ($1, $2, 'dislike', $3)
+		ON CONFLICT (post_id, user_login) DO UPDATE 
 		SET reaction_type = 'dislike', created_at = $3`,
 		postId, userLogin, time.Now())
 	if err != nil {

@@ -28,6 +28,36 @@ func main() {
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	{
+		// repo := repository.NewPostRepository(db)
+
+		// ctx := context.Background()
+
+		// fmt.Println(repo.DislikePost(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89", "danixx"))
+		// fmt.Println(repo.DislikePost(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89", "danixx1"))
+		// fmt.Println(repo.DislikePost(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89", "danixx2"))
+		// fmt.Println(repo.GetPostReactionsCount(ctx, "2eae73b8-9f1e-4ac1-afe3-7927104f3e89"))
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		// repo := repository.NewFriendRepository(db)
+
+		// ctx := context.Background()
+
+		// arr, _ := repo.GetFriends(ctx, "danixx", 0, 10)
+		// for _, a := range arr {
+		// 	fmt.Println(a)
+		// }
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
 		// repo := repository.NewCountryRepository(db)
 
 		// ctx := context.Background()
@@ -58,12 +88,12 @@ func main() {
 
 		// ctx := context.Background()
 
-		// login := "danixx"
-		// email := "ursuldm@gmail.com"
+		// login := "danixx2"
+		// email := "ursuldm2@gmail.com"
 		// passwordHash := "PASSWORD"
 		// countryCode := "RU"
 		// isPublic := true
-		// phone := "+79219691565"
+		// phone := "+792196915652"
 		// image := "https://link/to/image"
 
 		// // CREATE
