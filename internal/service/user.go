@@ -2,29 +2,21 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"github.com/realdanielursul/pulse-api/internal/repository"
-	"github.com/realdanielursul/pulse-api/pkg/hasher"
 )
 
 type UserService struct {
-	userRepo       repository.User
-	friendRepo     repository.Friend
-	countryRepo    repository.Country
-	passwordHasher hasher.PasswordHasher
-	signKey        string
-	tokenTTL       time.Duration
+	userRepo    repository.User
+	friendRepo  repository.Friend
+	countryRepo repository.Country
 }
 
-func NewUserService(userRepo repository.User, friendRepo repository.Friend, countryRepo repository.Country, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *UserService {
+func NewUserService(userRepo repository.User, friendRepo repository.Friend, countryRepo repository.Country) *UserService {
 	return &UserService{
-		userRepo:       userRepo,
-		friendRepo:     friendRepo,
-		countryRepo:    countryRepo,
-		passwordHasher: passwordHasher,
-		signKey:        signKey,
-		tokenTTL:       tokenTTL,
+		userRepo:    userRepo,
+		friendRepo:  friendRepo,
+		countryRepo: countryRepo,
 	}
 }
 

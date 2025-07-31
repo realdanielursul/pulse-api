@@ -2,27 +2,19 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"github.com/realdanielursul/pulse-api/internal/repository"
-	"github.com/realdanielursul/pulse-api/pkg/hasher"
 )
 
 type FriendService struct {
-	userRepo       repository.User
-	friendRepo     repository.Friend
-	passwordHasher hasher.PasswordHasher
-	signKey        string
-	tokenTTL       time.Duration
+	userRepo   repository.User
+	friendRepo repository.Friend
 }
 
-func NewFriendService(userRepo repository.User, friendRepo repository.Friend, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *FriendService {
+func NewFriendService(userRepo repository.User, friendRepo repository.Friend) *FriendService {
 	return &FriendService{
-		userRepo:       userRepo,
-		friendRepo:     friendRepo,
-		passwordHasher: passwordHasher,
-		signKey:        signKey,
-		tokenTTL:       tokenTTL,
+		userRepo:   userRepo,
+		friendRepo: friendRepo,
 	}
 }
 
@@ -79,7 +71,6 @@ func (s *FriendService) ListFriends(ctx context.Context, userLogin string, limit
 	friendsOutput := make([]*FriendOutput, 0, len(friends))
 	for _, friend := range friends {
 		friendOutput := &FriendOutput{
-			UserLogin:   friend.UserLogin,
 			FriendLogin: friend.FriendLogin,
 			AddedAt:     friend.AddedAt,
 		}

@@ -15,7 +15,7 @@ postgres:
 
 jwt:
   sign_key: GBANDS812
-  token_ttl: 120m
+  token_ttl: 1440m
 
 hasher:
   salt: dakd1mw123qmz/zdwdwqdp*

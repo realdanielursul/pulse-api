@@ -44,7 +44,7 @@ func (r *FriendRepository) GetFriends(ctx context.Context, userLogin string, lim
 	defer cancel()
 
 	friends := make([]*entity.Friend, 0, 100)
-	sql := `SELECT * FROM friends WHERE user_login = $1 ORDER BY added_at DESC LIMIT $2 OFFSET $3`
+	sql := `SELECT friend_login, added_at FROM friends WHERE user_login = $1 ORDER BY added_at DESC LIMIT $2 OFFSET $3`
 	rows, err := r.QueryContext(ctx, sql, userLogin, limit, offset)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (r *FriendRepository) GetFriends(ctx context.Context, userLogin string, lim
 
 	for rows.Next() {
 		friend := &entity.Friend{}
-		if rows.Scan(&friend.UserLogin, &friend.FriendLogin, &friend.AddedAt); err != nil {
+		if rows.Scan(&friend.FriendLogin, &friend.AddedAt); err != nil {
 			return nil, err
 		}
 

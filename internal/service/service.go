@@ -88,7 +88,6 @@ type Country interface {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type FriendOutput struct {
-	UserLogin   string    `json:"userLogin"`
 	FriendLogin string    `json:"friendLogin"`
 	AddedAt     time.Time `json:"addedAt"`
 }
@@ -147,9 +146,9 @@ type Services struct {
 func NewServices(deps ServicesDependencies) *Services {
 	return &Services{
 		Auth:    NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL),
-		User:    NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Repos.Country, deps.Hasher, deps.SignKey, deps.TokenTTL),
-		Country: NewCountryService(deps.Repos.Country, deps.Hasher, deps.SignKey, deps.TokenTTL),
-		Friend:  NewFriendService(deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
-		Post:    NewPostService(deps.Repos.Post, deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		User:    NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Repos.Country),
+		Country: NewCountryService(deps.Repos.Country),
+		Friend:  NewFriendService(deps.Repos.User, deps.Repos.Friend),
+		Post:    NewPostService(deps.Repos.Post, deps.Repos.User, deps.Repos.Friend),
 	}
 }

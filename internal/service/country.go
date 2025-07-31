@@ -4,26 +4,18 @@ import (
 	"context"
 	"slices"
 	"sort"
-	"time"
 
 	"github.com/realdanielursul/pulse-api/internal/entity"
 	"github.com/realdanielursul/pulse-api/internal/repository"
-	"github.com/realdanielursul/pulse-api/pkg/hasher"
 )
 
 type CountryService struct {
-	countryRepo    repository.Country
-	passwordHasher hasher.PasswordHasher
-	signKey        string
-	tokenTTL       time.Duration
+	countryRepo repository.Country
 }
 
-func NewCountryService(countryRepo repository.Country, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *CountryService {
+func NewCountryService(countryRepo repository.Country) *CountryService {
 	return &CountryService{
-		countryRepo:    countryRepo,
-		passwordHasher: passwordHasher,
-		signKey:        signKey,
-		tokenTTL:       tokenTTL,
+		countryRepo: countryRepo,
 	}
 }
 

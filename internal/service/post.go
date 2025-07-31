@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"github.com/realdanielursul/pulse-api/internal/entity"
 	"github.com/realdanielursul/pulse-api/internal/repository"
@@ -14,18 +13,13 @@ type PostService struct {
 	userRepo       repository.User
 	friendRepo     repository.Friend
 	passwordHasher hasher.PasswordHasher
-	signKey        string
-	tokenTTL       time.Duration
 }
 
-func NewPostService(postRepo repository.Post, userRepo repository.User, friendRepo repository.Friend, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *PostService {
+func NewPostService(postRepo repository.Post, userRepo repository.User, friendRepo repository.Friend) *PostService {
 	return &PostService{
-		postRepo:       postRepo,
-		userRepo:       userRepo,
-		friendRepo:     friendRepo,
-		passwordHasher: passwordHasher,
-		signKey:        signKey,
-		tokenTTL:       tokenTTL,
+		postRepo:   postRepo,
+		userRepo:   userRepo,
+		friendRepo: friendRepo,
 	}
 }
 
