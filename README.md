@@ -2,11 +2,11 @@
 
 Welcome to **Pulse**, a dynamic social network where users can create their own blogs, write engaging posts on a variety of topics, and share their thoughts with the world.
 
-This application was developed as part of the technical challenge for the PROD '24 contest. For more details, you can find the task description and the OpenAPI specification in the `docs` directory.
+This application was developed as part of the technical challenge for the PROD '24 contest. For more details, you can find the task description and the OpenAPI specification in the repository.
 
 ## Getting Started
 
-Follow these steps to run the application locally:
+Follow these steps to run the application:
 
 1. **Clone the Repository**:
     ```
@@ -18,20 +18,10 @@ Follow these steps to run the application locally:
     go mod tidy
     ```
 
-3. **Configure the application:**
-    - Configure `config.yaml` file in `configs` directory.
-    - Create `.env` file in root directory and set environment variables as following:
-
-        ```
-        DB_PASSWORD=...
-        SECRET_KEY=...
-        SALT=...
-        ```
-
-4. **Run the Application:**
+3. **Run the Application:**
     ```bash
-    make up && make run
+    docker compose up
     ```
 
-5. **Access the API:**
+4. **Access the API:**
 The API will be available at http://localhost:8080/swagger.
