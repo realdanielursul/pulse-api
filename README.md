@@ -25,3 +25,15 @@ Follow these steps to run the application:
 
 4. **Access the API:**
 The API will be available at http://localhost:8080/swagger.
+
+## Technologies Used:
+- **Gin**: A web framework for building the API.
+
+- **JWT**: For authorization and authentication.
+
+- **PostgreSQL**: A relational database for data storage.
+
+- **Docker**: For app containerization.
+
+- **Swagger**: API documentation for easy reference.
+
