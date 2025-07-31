@@ -26,7 +26,7 @@ func (h *Handler) createPost(c *gin.Context) {
 		return
 	}
 
-	post, err := h.services.Post.CreatePost(c.Request.Context(), &service.PostCreateInput{
+	post, err := h.services.Post.CreatePost(c.Request.Context(), &service.PostCreatePostInput{
 		Content: input.Content,
 		Author:  login,
 		Tags:    input.Tags,

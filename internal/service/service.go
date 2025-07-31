@@ -47,8 +47,6 @@ type Auth interface {
 	UpdatePassword(ctx context.Context, userLogin string, input *AuthUpdatePasswordInput) error
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 type UserOutput struct {
 	Login       string `json:"login"`
 	Email       string `json:"email"`
@@ -71,8 +69,6 @@ type User interface {
 	UpdateProfile(ctx context.Context, userLogin string, input *UserUpdateProfileInput) (*UserOutput, error)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 type CountryOutput struct {
 	Name   string `json:"name"`
 	Alpha2 string `json:"alpha2"`
@@ -85,8 +81,6 @@ type Country interface {
 	GetCountry(ctx context.Context, alpha2 string) (*CountryOutput, error)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 type FriendOutput struct {
 	FriendLogin string    `json:"friendLogin"`
 	AddedAt     time.Time `json:"addedAt"`
@@ -98,9 +92,7 @@ type Friend interface {
 	ListFriends(ctx context.Context, userLogin string, limit, offset int) ([]*FriendOutput, error)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-type PostCreateInput struct {
+type PostCreatePostInput struct {
 	Content string
 	Author  string
 	Tags    []string
@@ -117,15 +109,13 @@ type PostOutput struct {
 }
 
 type Post interface {
-	CreatePost(ctx context.Context, input *PostCreateInput) (*PostOutput, error)
+	CreatePost(ctx context.Context, input *PostCreatePostInput) (*PostOutput, error)
 	GetPost(ctx context.Context, postId, requesterLogin string) (*PostOutput, error)
 	GetMyFeed(ctx context.Context, userLogin string, limit, offset int) ([]*PostOutput, error)
 	GetUserFeed(ctx context.Context, login, requesterLogin string, limit, offset int) ([]*PostOutput, error)
 	LikePost(ctx context.Context, postId, userLogin string) (*PostOutput, error)
 	DislikePost(ctx context.Context, postId, userLogin string) (*PostOutput, error)
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type ServicesDependencies struct {
 	Repos  *repository.Repositories

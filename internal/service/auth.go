@@ -47,7 +47,7 @@ func (s *AuthService) Register(ctx context.Context, input *AuthRegisterInput) (*
 		return nil, ErrPhoneAlreadyExists
 	}
 
-	user := &entity.User{
+	user, err := s.userRepo.CreateUser(ctx, &entity.User{
 		Login:        input.Login,
 		Email:        input.Email,
 		PasswordHash: s.passwordHasher.Hash(input.Password),
@@ -55,27 +55,29 @@ func (s *AuthService) Register(ctx context.Context, input *AuthRegisterInput) (*
 		IsPublic:     input.IsPublic,
 		Phone:        input.Phone,
 		Image:        input.Image,
-	}
-
-	newUser, err := s.userRepo.CreateUser(ctx, user)
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	return &AuthRegisterOutput{
-		Login:       newUser.Login,
-		Email:       newUser.Email,
-		CountryCode: newUser.CountryCode,
-		IsPublic:    newUser.IsPublic,
-		Phone:       newUser.Phone,
-		Image:       newUser.Image,
+		Login:       user.Login,
+		Email:       user.Email,
+		CountryCode: user.CountryCode,
+		IsPublic:    user.IsPublic,
+		Phone:       user.Phone,
+		Image:       user.Image,
 	}, nil
 }
 
 func (s *AuthService) SignIn(ctx context.Context, input *AuthSignInInput) (string, error) {
-	_, err := s.userRepo.GetUserByLoginAndPassword(ctx, input.Login, s.passwordHasher.Hash(input.Password))
+	user, err := s.userRepo.GetUserByLoginAndPassword(ctx, input.Login, s.passwordHasher.Hash(input.Password))
 	if err != nil {
-		return "", ErrInvalidLoginOrPassword
+		if user == nil {
+			return "", ErrInvalidLoginOrPassword
+		}
+
+		return "", err
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &TokenClaims{
@@ -106,7 +108,6 @@ func (s *AuthService) ValidateToken(ctx context.Context, tokenString string) (st
 
 		return []byte(s.signKey), nil
 	})
-
 	if err != nil {
 		return "", false, ErrCannotParseToken
 	}

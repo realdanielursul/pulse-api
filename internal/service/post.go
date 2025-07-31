@@ -23,7 +23,7 @@ func NewPostService(postRepo repository.Post, userRepo repository.User, friendRe
 	}
 }
 
-func (s *PostService) CreatePost(ctx context.Context, input *PostCreateInput) (*PostOutput, error) {
+func (s *PostService) CreatePost(ctx context.Context, input *PostCreatePostInput) (*PostOutput, error) {
 	postInfo := &entity.Post{
 		Content: input.Content,
 		Author:  input.Author,
