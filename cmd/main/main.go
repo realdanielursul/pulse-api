@@ -19,17 +19,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// GET POST BY ID (string or uuid?)
-// RENAME FRIENDS FIELDS (maybe follower?)
 // SEGREGATE CONTROLLER LAYER
 // VALIDATE DATA
-// REMOVE UNNECESSARY FIELDS FROM SERVICES -- DONE
-// DROP COLUMN IN FRIEND ENTITY -- DONE
 
 func main() {
 	logger.SetLogrus()
 
-	cfg, err := config.NewConfig("./config/local.yaml")
+	cfg, err := config.NewConfig("./config/docker.yaml")
 	if err != nil {
 		logrus.Fatalf("error initializing config: %s", err.Error())
 	}
