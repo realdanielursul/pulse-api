@@ -8,8 +8,8 @@ services:
         condition: service_healthy
     environment:
       DB_PASSWORD: postgres
-      SECRET_KEY: DAYSOFMADNESS
-      SALT: sdka/13/3f0od,@/2lsdod
+      SIGN_KEY: GBANDS812
+      SALT: dakd1mw123qmz/zdwdwqdp*
     command: ["./bin/app"]
 
   db:

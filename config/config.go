@@ -30,18 +30,18 @@ type (
 		Host     string `yaml:"host"`
 		Port     string `yaml:"port"`
 		Username string `yaml:"username"`
-		Password string `yaml:"password"`
+		Password string `yaml:"password" env:"DB_PASSWORD"`
 		Database string `yaml:"database"`
 		SSLMode  string `yaml:"ssl_mode"`
 	}
 
 	JWT struct {
-		SignKey  string        `yaml:"sign_key"`
+		SignKey  string        `yaml:"sign_key" env:"SIGN_KEY"`
 		TokenTTL time.Duration `yaml:"token_ttl"`
 	}
 
 	Hasher struct {
-		Salt string `yaml:"salt"`
+		Salt string `yaml:"salt" env:"SALT"`
 	}
 )
 
