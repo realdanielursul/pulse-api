@@ -11,15 +11,17 @@ import (
 type UserService struct {
 	userRepo       repository.User
 	friendRepo     repository.Friend
+	countryRepo    repository.Country
 	passwordHasher hasher.PasswordHasher
 	signKey        string
 	tokenTTL       time.Duration
 }
 
-func NewUserService(userRepo repository.User, friendRepo repository.Friend, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *UserService {
+func NewUserService(userRepo repository.User, friendRepo repository.Friend, countryRepo repository.Country, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *UserService {
 	return &UserService{
 		userRepo:       userRepo,
 		friendRepo:     friendRepo,
+		countryRepo:    countryRepo,
 		passwordHasher: passwordHasher,
 		signKey:        signKey,
 		tokenTTL:       tokenTTL,
@@ -29,6 +31,10 @@ func NewUserService(userRepo repository.User, friendRepo repository.Friend, pass
 func (s *UserService) GetProfile(ctx context.Context, login string, requesterLogin string) (*UserOutput, error) {
 	dbUser, err := s.userRepo.GetUserByLogin(ctx, login)
 	if err != nil {
+		if dbUser == nil {
+			return nil, ErrUserNotFound
+		}
+
 		return nil, err
 	}
 
@@ -78,6 +84,21 @@ func (s *UserService) GetMyProfile(ctx context.Context, userLogin string) (*User
 }
 
 func (s *UserService) UpdateProfile(ctx context.Context, userLogin string, input *UserUpdateProfileInput) (*UserOutput, error) {
+	country, err := s.countryRepo.GetCountryByAlpha2(ctx, *input.CountryCode)
+	if err != nil {
+		if country == nil {
+			return nil, ErrCountryNotFound
+		}
+
+		return nil, err
+	}
+
+	if input.Phone != nil {
+		if _, err := s.userRepo.GetUserByPhone(ctx, *input.Phone); err == nil {
+			return nil, ErrPhoneAlreadyExists
+		}
+	}
+
 	if err := s.userRepo.UpdateUser(ctx, userLogin, input.CountryCode, input.Phone, input.Image, input.IsPublic); err != nil {
 		return nil, err
 	}

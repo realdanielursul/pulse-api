@@ -56,8 +56,8 @@ func (r *PostRepository) GetUserPosts(ctx context.Context, userLogin string, lim
 	defer cancel()
 
 	posts := make([]*entity.Post, 0, 100)
-	sql := `SELECT * FROM posts WHERE author = $1`
-	rows, err := r.QueryContext(ctx, sql, userLogin)
+	sql := `SELECT * FROM posts WHERE author = $1 LIMIT $2 OFFSET $3`
+	rows, err := r.QueryContext(ctx, sql, userLogin, limit, offset)
 	if err != nil {
 		return nil, err
 	}

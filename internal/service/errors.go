@@ -8,6 +8,10 @@ var (
 )
 
 var (
+	ErrUserNotFound = errors.New("user not found")
+
+	ErrPostNotFound = errors.New("post not found")
+
 	ErrLoginAlreadyExists     = errors.New("login already exists")
 	ErrEmailAlreadyExists     = errors.New("email already exists")
 	ErrPhoneAlreadyExists     = errors.New("phone already exists")

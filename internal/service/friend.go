@@ -9,14 +9,16 @@ import (
 )
 
 type FriendService struct {
+	userRepo       repository.User
 	friendRepo     repository.Friend
 	passwordHasher hasher.PasswordHasher
 	signKey        string
 	tokenTTL       time.Duration
 }
 
-func NewFriendService(friendRepo repository.Friend, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *FriendService {
+func NewFriendService(userRepo repository.User, friendRepo repository.Friend, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *FriendService {
 	return &FriendService{
+		userRepo:       userRepo,
 		friendRepo:     friendRepo,
 		passwordHasher: passwordHasher,
 		signKey:        signKey,
@@ -25,10 +27,46 @@ func NewFriendService(friendRepo repository.Friend, passwordHasher hasher.Passwo
 }
 
 func (s *FriendService) AddFriend(ctx context.Context, userLogin, friendLogin string) error {
+	isFriend, err := s.friendRepo.IsFriend(ctx, userLogin, friendLogin)
+	if err != nil {
+		return err
+	}
+
+	if isFriend {
+		return nil
+	}
+
+	user, err := s.userRepo.GetUserByLogin(ctx, userLogin)
+	if err != nil {
+		if user == nil {
+			return ErrUserNotFound
+		}
+
+		return err
+	}
+
 	return s.friendRepo.AddFriend(ctx, userLogin, friendLogin)
 }
 
 func (s *FriendService) RemoveFriend(ctx context.Context, userLogin, friendLogin string) error {
+	isFriend, err := s.friendRepo.IsFriend(ctx, userLogin, friendLogin)
+	if err != nil {
+		return err
+	}
+
+	if !isFriend {
+		return nil
+	}
+
+	user, err := s.userRepo.GetUserByLogin(ctx, userLogin)
+	if err != nil {
+		if user == nil {
+			return ErrUserNotFound
+		}
+
+		return err
+	}
+
 	return s.friendRepo.RemoveFriend(ctx, userLogin, friendLogin)
 }
 

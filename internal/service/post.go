@@ -55,6 +55,10 @@ func (s *PostService) CreatePost(ctx context.Context, input *PostCreateInput) (*
 func (s *PostService) GetPost(ctx context.Context, postId, requesterLogin string) (*PostOutput, error) {
 	post, err := s.postRepo.GetPostById(ctx, postId)
 	if err != nil {
+		if post == nil {
+			return nil, ErrPostNotFound
+		}
+
 		return nil, err
 	}
 
@@ -164,6 +168,15 @@ func (s *PostService) GetUserFeed(ctx context.Context, login, requesterLogin str
 }
 
 func (s *PostService) LikePost(ctx context.Context, postId, userLogin string) (*PostOutput, error) {
+	post, err := s.postRepo.GetPostById(ctx, postId)
+	if err != nil {
+		if post == nil {
+			return nil, ErrPostNotFound
+		}
+
+		return nil, err
+	}
+
 	if err := s.postRepo.LikePost(ctx, postId, userLogin); err != nil {
 		return nil, err
 	}
@@ -172,6 +185,15 @@ func (s *PostService) LikePost(ctx context.Context, postId, userLogin string) (*
 }
 
 func (s *PostService) DislikePost(ctx context.Context, postId, userLogin string) (*PostOutput, error) {
+	post, err := s.postRepo.GetPostById(ctx, postId)
+	if err != nil {
+		if post == nil {
+			return nil, ErrPostNotFound
+		}
+
+		return nil, err
+	}
+
 	if err := s.postRepo.DislikePost(ctx, postId, userLogin); err != nil {
 		return nil, err
 	}

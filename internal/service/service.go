@@ -24,8 +24,8 @@ type AuthRegisterInput struct {
 type AuthRegisterOutput struct {
 	Login       string `json:"login"`
 	Email       string `json:"email"`
-	CountryCode string `json:"country_code"`
-	IsPublic    bool   `json:"is_public"`
+	CountryCode string `json:"countryCode"`
+	IsPublic    bool   `json:"isPublic"`
 	Phone       string `json:"phone,omitempty"`
 	Image       string `json:"image,omitempty"`
 }
@@ -52,8 +52,8 @@ type Auth interface {
 type UserOutput struct {
 	Login       string `json:"login"`
 	Email       string `json:"email"`
-	CountryCode string `json:"country_code"`
-	IsPublic    bool   `json:"is_public"`
+	CountryCode string `json:"countrCode"`
+	IsPublic    bool   `json:"isPublic"`
 	Phone       string `json:"phone,omitempty"`
 	Image       string `json:"image,omitempty"`
 }
@@ -88,9 +88,9 @@ type Country interface {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type FriendOutput struct {
-	UserLogin   string    `json:"user_login"`
-	FriendLogin string    `json:"friend_login"`
-	AddedAt     time.Time `json:"added_at"`
+	UserLogin   string    `json:"userLogin"`
+	FriendLogin string    `json:"friendLogin"`
+	AddedAt     time.Time `json:"addedAt"`
 }
 
 type Friend interface {
@@ -112,9 +112,9 @@ type PostOutput struct {
 	Content       string    `json:"content"`
 	Author        string    `json:"author"`
 	Tags          []string  `json:"tags"`
-	CreatedAt     time.Time `json:"created_at"`
-	LikesCount    int       `json:"likes_count"`
-	DislikesCount int       `json:"dislikes_count"`
+	CreatedAt     time.Time `json:"createdAt"`
+	LikesCount    int       `json:"likesCount"`
+	DislikesCount int       `json:"dislikesCount"`
 }
 
 type Post interface {
@@ -147,9 +147,9 @@ type Services struct {
 func NewServices(deps ServicesDependencies) *Services {
 	return &Services{
 		Auth:    NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL),
-		User:    NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		User:    NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Repos.Country, deps.Hasher, deps.SignKey, deps.TokenTTL),
 		Country: NewCountryService(deps.Repos.Country, deps.Hasher, deps.SignKey, deps.TokenTTL),
-		Friend:  NewFriendService(deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		Friend:  NewFriendService(deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
 		Post:    NewPostService(deps.Repos.Post, deps.Repos.User, deps.Repos.Friend, deps.Hasher, deps.SignKey, deps.TokenTTL),
 	}
 }

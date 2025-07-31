@@ -23,6 +23,8 @@ import (
 // RENAME FRIENDS FIELDS (maybe follower?)
 // SEGREGATE CONTROLLER LAYER
 // VALIDATE DATA
+// REMOVE FIELDS FROM SERVICES
+// DROP COLUMN IN FRIEND ENTITY
 
 func main() {
 	logger.SetLogrus()

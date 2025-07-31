@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -70,9 +71,45 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		api.GET("/countries", h.listCountries)
 		api.GET("/countries/:alpha2", h.getCountry)
+
+		api.POST("/auth/register", h.register)
+		api.POST("/auth/sign-in", h.signIn)
+
+		apiSecured := api.Group("/", h.userIdentity)
+		{
+			apiSecured.GET("/me/profile", h.getMyProfile)
+			apiSecured.PATCH("/me/profile", h.updateProfile)
+			apiSecured.GET("/profiles/:login", h.getProfile)
+			apiSecured.POST("/me/updatePassword", h.updatePassword)
+
+			apiSecured.POST("/friends/add", h.addFriend)
+			apiSecured.POST("/friends/remove", h.removeFriend)
+			apiSecured.GET("/friends", h.listFriends)
+
+			apiSecured.POST("/posts/new", h.createPost)
+			apiSecured.GET("/posts/:postId", h.getPost)
+			apiSecured.GET("/posts/feed/my", h.getMyPosts)
+			apiSecured.GET("/posts/feed/:login", h.getUserPosts)
+			apiSecured.POST("/posts/:postId/like", h.likePost)
+			apiSecured.POST("/posts/:postId/dislike", h.dislikePost)
+		}
 	}
 
 	return router
+}
+
+func getLogin(c *gin.Context) (string, error) {
+	login, ok := c.Get("login")
+	if !ok {
+		return "", errors.New("login not found")
+	}
+
+	loginString, ok := login.(string)
+	if !ok {
+		return "", errors.New("invalid login type")
+	}
+
+	return loginString, nil
 }
 
 type ErrorResponse struct {

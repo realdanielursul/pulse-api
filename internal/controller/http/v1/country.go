@@ -7,14 +7,6 @@ import (
 	"github.com/realdanielursul/pulse-api/internal/service"
 )
 
-// import (
-// 	"net/http"
-
-// 	"github.com/gin-gonic/gin"
-// 	"github.com/realdanielursul/pulse-api/internal/model"
-// 	"github.com/realdanielursul/pulse-api/internal/service"
-// )
-
 func (h *Handler) listCountries(c *gin.Context) {
 	regions := c.QueryArray("region")
 
