@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"log"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/realdanielursul/pulse-api/internal/entity"
@@ -30,8 +29,6 @@ func (r *FriendRepository) AddFriend(ctx context.Context, userLogin, friendLogin
 func (r *FriendRepository) RemoveFriend(ctx context.Context, userLogin, friendLogin string) error {
 	ctx, cancel := context.WithTimeout(ctx, operationTimeout)
 	defer cancel()
-
-	log.Println(userLogin, friendLogin)
 
 	sql := `DELETE FROM friends WHERE user_login = $1 AND friend_login = $2`
 	_, err := r.ExecContext(ctx, sql, userLogin, friendLogin)

@@ -93,21 +93,13 @@ func (r *PostRepository) LikePost(ctx context.Context, postId, userLogin string)
 	}
 	defer tx.Rollback()
 
-	_, err = tx.ExecContext(ctx, `
-		DELETE FROM post_reactions 
-		WHERE post_id = $1 AND user_login = $2 AND reaction_type = 'dislike'`,
-		postId, userLogin)
-	if err != nil {
+	sql := `DELETE FROM post_reactions WHERE post_id = $1 AND user_login = $2 AND reaction_type = 'dislike'`
+	if _, err := tx.ExecContext(ctx, sql, postId, userLogin); err != nil {
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, `
-		INSERT INTO post_reactions (post_id, user_login, reaction_type, created_at)
-		VALUES ($1, $2, 'like', $3)
-		ON CONFLICT (post_id, user_login) DO UPDATE 
-		SET reaction_type = 'like', created_at = $3`,
-		postId, userLogin, time.Now())
-	if err != nil {
+	sql = `INSERT INTO post_reactions (post_id, user_login, reaction_type) VALUES ($1, $2, 'like') ON CONFLICT (post_id, user_login) DO UPDATE SET reaction_type = 'like', created_at = $3`
+	if _, err = tx.ExecContext(ctx, sql, postId, userLogin, time.Now()); err != nil {
 		return err
 	}
 
@@ -124,21 +116,13 @@ func (r *PostRepository) DislikePost(ctx context.Context, postId, userLogin stri
 	}
 	defer tx.Rollback()
 
-	_, err = tx.ExecContext(ctx, `
-		DELETE FROM post_reactions 
-		WHERE post_id = $1 AND user_login = $2 AND reaction_type = 'like'`,
-		postId, userLogin)
-	if err != nil {
+	sql := `DELETE FROM post_reactions WHERE post_id = $1 AND user_login = $2 AND reaction_type = 'like'`
+	if _, err := tx.ExecContext(ctx, sql, postId, userLogin); err != nil {
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, `
-		INSERT INTO post_reactions (post_id, user_login, reaction_type, created_at)
-		VALUES ($1, $2, 'dislike', $3)
-		ON CONFLICT (post_id, user_login) DO UPDATE 
-		SET reaction_type = 'dislike', created_at = $3`,
-		postId, userLogin, time.Now())
-	if err != nil {
+	sql = `INSERT INTO post_reactions (post_id, user_login, reaction_type) VALUES ($1, $2, 'dislike') ON CONFLICT (post_id, user_login) DO UPDATE SET reaction_type = 'dislike', created_at = $3`
+	if _, err = tx.ExecContext(ctx, sql, postId, userLogin, time.Now()); err != nil {
 		return err
 	}
 
