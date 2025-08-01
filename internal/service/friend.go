@@ -19,6 +19,15 @@ func NewFriendService(userRepo repository.User, friendRepo repository.Friend) *F
 }
 
 func (s *FriendService) AddFriend(ctx context.Context, userLogin, friendLogin string) error {
+	user, err := s.userRepo.GetUserByLogin(ctx, userLogin)
+	if err != nil {
+		if user == nil {
+			return ErrUserNotFound
+		}
+
+		return err
+	}
+
 	isFriend, err := s.friendRepo.IsFriend(ctx, userLogin, friendLogin)
 	if err != nil {
 		return err
@@ -28,6 +37,10 @@ func (s *FriendService) AddFriend(ctx context.Context, userLogin, friendLogin st
 		return nil
 	}
 
+	return s.friendRepo.AddFriend(ctx, userLogin, friendLogin)
+}
+
+func (s *FriendService) RemoveFriend(ctx context.Context, userLogin, friendLogin string) error {
 	user, err := s.userRepo.GetUserByLogin(ctx, userLogin)
 	if err != nil {
 		if user == nil {
@@ -37,10 +50,6 @@ func (s *FriendService) AddFriend(ctx context.Context, userLogin, friendLogin st
 		return err
 	}
 
-	return s.friendRepo.AddFriend(ctx, userLogin, friendLogin)
-}
-
-func (s *FriendService) RemoveFriend(ctx context.Context, userLogin, friendLogin string) error {
 	isFriend, err := s.friendRepo.IsFriend(ctx, userLogin, friendLogin)
 	if err != nil {
 		return err
@@ -48,15 +57,6 @@ func (s *FriendService) RemoveFriend(ctx context.Context, userLogin, friendLogin
 
 	if !isFriend {
 		return nil
-	}
-
-	user, err := s.userRepo.GetUserByLogin(ctx, userLogin)
-	if err != nil {
-		if user == nil {
-			return ErrUserNotFound
-		}
-
-		return err
 	}
 
 	return s.friendRepo.RemoveFriend(ctx, userLogin, friendLogin)

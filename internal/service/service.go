@@ -135,7 +135,7 @@ type Services struct {
 
 func NewServices(deps ServicesDependencies) *Services {
 	return &Services{
-		Auth:    NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		Auth:    NewAuthService(deps.Repos.User, deps.Repos.Token, deps.Repos.Country, deps.Hasher, deps.SignKey, deps.TokenTTL),
 		User:    NewUserService(deps.Repos.User, deps.Repos.Friend, deps.Repos.Country),
 		Country: NewCountryService(deps.Repos.Country),
 		Friend:  NewFriendService(deps.Repos.User, deps.Repos.Friend),

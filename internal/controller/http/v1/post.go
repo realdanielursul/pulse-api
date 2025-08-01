@@ -153,6 +153,11 @@ func (h *Handler) likePost(c *gin.Context) {
 			return
 		}
 
+		if err == service.ErrAccessDenied {
+			NewErrorResponse(c, http.StatusForbidden, err.Error())
+			return
+		}
+
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -177,6 +182,11 @@ func (h *Handler) dislikePost(c *gin.Context) {
 	if err != nil {
 		if err == service.ErrPostNotFound {
 			NewErrorResponse(c, http.StatusNotFound, err.Error())
+			return
+		}
+
+		if err == service.ErrAccessDenied {
+			NewErrorResponse(c, http.StatusForbidden, err.Error())
 			return
 		}
 

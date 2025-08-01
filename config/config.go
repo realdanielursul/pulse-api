@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/sirupsen/logrus"
 )
 
 type (
@@ -55,8 +54,6 @@ func NewConfig(configPath string) (*Config, error) {
 	if err := cleanenv.UpdateEnv(cfg); err != nil {
 		return nil, fmt.Errorf("error updating env file: %w", err)
 	}
-
-	logrus.Info(cfg)
 
 	return cfg, nil
 }

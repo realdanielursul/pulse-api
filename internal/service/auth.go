@@ -19,15 +19,17 @@ type TokenClaims struct {
 type AuthService struct {
 	userRepo       repository.User
 	tokenRepo      repository.Token
+	countryRepo    repository.Country
 	passwordHasher hasher.PasswordHasher
 	signKey        string
 	tokenTTL       time.Duration
 }
 
-func NewAuthService(userRepo repository.User, tokenRepo repository.Token, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *AuthService {
+func NewAuthService(userRepo repository.User, tokenRepo repository.Token, countryRepo repository.Country, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *AuthService {
 	return &AuthService{
 		userRepo:       userRepo,
 		tokenRepo:      tokenRepo,
+		countryRepo:    countryRepo,
 		passwordHasher: passwordHasher,
 		signKey:        signKey,
 		tokenTTL:       tokenTTL,
@@ -41,6 +43,15 @@ func (s *AuthService) Register(ctx context.Context, input *AuthRegisterInput) (*
 
 	if _, err := s.userRepo.GetUserByEmail(ctx, input.Email); err == nil {
 		return nil, ErrEmailAlreadyExists
+	}
+
+	country, err := s.countryRepo.GetCountryByAlpha2(ctx, input.CountryCode)
+	if err != nil {
+		if country == nil {
+			return nil, ErrCountryNotFound
+		}
+
+		return nil, err
 	}
 
 	if _, err := s.userRepo.GetUserByPhone(ctx, input.Phone); err == nil {

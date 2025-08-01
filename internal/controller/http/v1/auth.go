@@ -34,6 +34,11 @@ func (h *Handler) register(c *gin.Context) {
 		Image:       input.Image,
 	})
 	if err != nil {
+		if err == service.ErrCountryNotFound {
+			NewErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+
 		if err == service.ErrLoginAlreadyExists || err == service.ErrEmailAlreadyExists || err == service.ErrPhoneAlreadyExists {
 			NewErrorResponse(c, http.StatusConflict, err.Error())
 			return
